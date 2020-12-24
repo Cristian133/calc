@@ -1,0 +1,1054 @@
+   0  $accept : %entry% $end
+
+   1  linea : expr EOF
+   2        | EOF
+
+   3  expr : NRO
+   4       | VAR
+   5       | expr MAS expr
+   6       | expr MENOS expr
+   7       | expr POR expr
+   8       | expr DIV expr
+   9       | expr MENOR expr
+  10       | expr MENIG expr
+  11       | expr MAYOR expr
+  12       | expr MAYIG expr
+  13       | expr IGUAL expr
+  14       | expr DIST expr
+  15       | PIZQ expr PDER
+  16       | VAR ASIGN expr
+  17       | MENOS expr
+  18       | IF expr THEN expr ELSE expr
+  19       | WHILE expr DO expr END
+  20       | PRINT expr
+  21       | expr PCOMA expr
+
+  22  %entry% : '\001' linea
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . linea  (22)
+
+	EOF  shift 3
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 11
+	linea  goto 12
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	linea : EOF .  (2)
+
+	.  reduce 2
+
+
+state 4
+	expr : IF . expr THEN expr ELSE expr  (18)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 13
+
+
+state 5
+	expr : MENOS . expr  (17)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 14
+
+
+state 6
+	expr : NRO .  (3)
+
+	.  reduce 3
+
+
+state 7
+	expr : PIZQ . expr PDER  (15)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 15
+
+
+state 8
+	expr : PRINT . expr  (20)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 16
+
+
+state 9
+	expr : VAR .  (4)
+	expr : VAR . ASIGN expr  (16)
+
+	ASIGN  shift 17
+	DIST  reduce 4
+	DIV  reduce 4
+	DO  reduce 4
+	ELSE  reduce 4
+	END  reduce 4
+	EOF  reduce 4
+	IGUAL  reduce 4
+	MAS  reduce 4
+	MAYIG  reduce 4
+	MAYOR  reduce 4
+	MENIG  reduce 4
+	MENOR  reduce 4
+	MENOS  reduce 4
+	PCOMA  reduce 4
+	PDER  reduce 4
+	POR  reduce 4
+	THEN  reduce 4
+
+
+state 10
+	expr : WHILE . expr DO expr END  (19)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 18
+
+
+state 11
+	linea : expr . EOF  (1)
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	EOF  shift 21
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	PCOMA  shift 29
+	POR  shift 30
+	.  error
+
+
+state 12
+	%entry% : '\001' linea .  (22)
+
+	.  reduce 22
+
+
+state 13
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : IF expr . THEN expr ELSE expr  (18)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	PCOMA  shift 29
+	POR  shift 30
+	THEN  shift 31
+	.  error
+
+
+state 14
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : MENOS expr .  (17)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  reduce 17
+	DIV  reduce 17
+	DO  reduce 17
+	ELSE  reduce 17
+	END  reduce 17
+	EOF  reduce 17
+	IGUAL  reduce 17
+	MAS  reduce 17
+	MAYIG  reduce 17
+	MAYOR  reduce 17
+	MENIG  reduce 17
+	MENOR  reduce 17
+	MENOS  reduce 17
+	PCOMA  reduce 17
+	PDER  reduce 17
+	POR  reduce 17
+	THEN  reduce 17
+
+
+state 15
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : PIZQ expr . PDER  (15)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	PCOMA  shift 29
+	PDER  shift 32
+	POR  shift 30
+	.  error
+
+
+state 16
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : PRINT expr .  (20)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 20
+	ELSE  reduce 20
+	END  reduce 20
+	EOF  reduce 20
+	PCOMA  reduce 20
+	PDER  reduce 20
+	THEN  reduce 20
+
+
+state 17
+	expr : VAR ASIGN . expr  (16)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 33
+
+
+state 18
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : WHILE expr . DO expr END  (19)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	DO  shift 34
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	PCOMA  shift 29
+	POR  shift 30
+	.  error
+
+
+state 19
+	expr : expr DIST . expr  (14)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 35
+
+
+state 20
+	expr : expr DIV . expr  (8)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 36
+
+
+state 21
+	linea : expr EOF .  (1)
+
+	.  reduce 1
+
+
+state 22
+	expr : expr IGUAL . expr  (13)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 37
+
+
+state 23
+	expr : expr MAS . expr  (5)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 38
+
+
+state 24
+	expr : expr MAYIG . expr  (12)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 39
+
+
+state 25
+	expr : expr MAYOR . expr  (11)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 40
+
+
+state 26
+	expr : expr MENIG . expr  (10)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 41
+
+
+state 27
+	expr : expr MENOR . expr  (9)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 42
+
+
+state 28
+	expr : expr MENOS . expr  (6)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 43
+
+
+state 29
+	expr : expr PCOMA . expr  (21)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 44
+
+
+state 30
+	expr : expr POR . expr  (7)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 45
+
+
+state 31
+	expr : IF expr THEN . expr ELSE expr  (18)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 46
+
+
+state 32
+	expr : PIZQ expr PDER .  (15)
+
+	.  reduce 15
+
+
+state 33
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : VAR ASIGN expr .  (16)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 16
+	ELSE  reduce 16
+	END  reduce 16
+	EOF  reduce 16
+	PCOMA  reduce 16
+	PDER  reduce 16
+	THEN  reduce 16
+
+
+state 34
+	expr : WHILE expr DO . expr END  (19)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 47
+
+
+state 35
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr DIST expr .  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIV  shift 20
+	MAS  shift 23
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 14
+	ELSE  reduce 14
+	END  reduce 14
+	EOF  reduce 14
+	PCOMA  reduce 14
+	PDER  reduce 14
+	THEN  reduce 14
+
+
+state 36
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr DIV expr .  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  reduce 8
+	DIV  reduce 8
+	DO  reduce 8
+	ELSE  reduce 8
+	END  reduce 8
+	EOF  reduce 8
+	IGUAL  reduce 8
+	MAS  reduce 8
+	MAYIG  reduce 8
+	MAYOR  reduce 8
+	MENIG  reduce 8
+	MENOR  reduce 8
+	MENOS  reduce 8
+	PCOMA  reduce 8
+	PDER  reduce 8
+	POR  reduce 8
+	THEN  reduce 8
+
+
+state 37
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr IGUAL expr .  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIV  shift 20
+	MAS  shift 23
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 13
+	ELSE  reduce 13
+	END  reduce 13
+	EOF  reduce 13
+	PCOMA  reduce 13
+	PDER  reduce 13
+	THEN  reduce 13
+
+
+state 38
+	expr : expr . MAS expr  (5)
+	expr : expr MAS expr .  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIV  shift 20
+	POR  shift 30
+	DIST  reduce 5
+	DO  reduce 5
+	ELSE  reduce 5
+	END  reduce 5
+	EOF  reduce 5
+	IGUAL  reduce 5
+	MAS  reduce 5
+	MAYIG  reduce 5
+	MAYOR  reduce 5
+	MENIG  reduce 5
+	MENOR  reduce 5
+	MENOS  reduce 5
+	PCOMA  reduce 5
+	PDER  reduce 5
+	THEN  reduce 5
+
+
+state 39
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr MAYIG expr .  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIV  shift 20
+	MAS  shift 23
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 12
+	ELSE  reduce 12
+	END  reduce 12
+	EOF  reduce 12
+	PCOMA  reduce 12
+	PDER  reduce 12
+	THEN  reduce 12
+
+
+state 40
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr MAYOR expr .  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIV  shift 20
+	MAS  shift 23
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 11
+	ELSE  reduce 11
+	END  reduce 11
+	EOF  reduce 11
+	PCOMA  reduce 11
+	PDER  reduce 11
+	THEN  reduce 11
+
+
+state 41
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr MENIG expr .  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIV  shift 20
+	MAS  shift 23
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 10
+	ELSE  reduce 10
+	END  reduce 10
+	EOF  reduce 10
+	PCOMA  reduce 10
+	PDER  reduce 10
+	THEN  reduce 10
+
+
+state 42
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr MENOR expr .  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIV  shift 20
+	MAS  shift 23
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 9
+	ELSE  reduce 9
+	END  reduce 9
+	EOF  reduce 9
+	PCOMA  reduce 9
+	PDER  reduce 9
+	THEN  reduce 9
+
+
+state 43
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr MENOS expr .  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIV  shift 20
+	POR  shift 30
+	DIST  reduce 6
+	DO  reduce 6
+	ELSE  reduce 6
+	END  reduce 6
+	EOF  reduce 6
+	IGUAL  reduce 6
+	MAS  reduce 6
+	MAYIG  reduce 6
+	MAYOR  reduce 6
+	MENIG  reduce 6
+	MENOR  reduce 6
+	MENOS  reduce 6
+	PCOMA  reduce 6
+	PDER  reduce 6
+	THEN  reduce 6
+
+
+state 44
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+	expr : expr PCOMA expr .  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 21
+	ELSE  reduce 21
+	END  reduce 21
+	EOF  reduce 21
+	PCOMA  reduce 21
+	PDER  reduce 21
+	THEN  reduce 21
+
+
+state 45
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr POR expr .  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  reduce 7
+	DIV  reduce 7
+	DO  reduce 7
+	ELSE  reduce 7
+	END  reduce 7
+	EOF  reduce 7
+	IGUAL  reduce 7
+	MAS  reduce 7
+	MAYIG  reduce 7
+	MAYOR  reduce 7
+	MENIG  reduce 7
+	MENOR  reduce 7
+	MENOS  reduce 7
+	PCOMA  reduce 7
+	PDER  reduce 7
+	POR  reduce 7
+	THEN  reduce 7
+
+
+state 46
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : IF expr THEN expr . ELSE expr  (18)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	ELSE  shift 48
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	PCOMA  shift 29
+	POR  shift 30
+	.  error
+
+
+state 47
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : WHILE expr DO expr . END  (19)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	END  shift 49
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	PCOMA  shift 29
+	POR  shift 30
+	.  error
+
+
+state 48
+	expr : IF expr THEN expr ELSE . expr  (18)
+
+	IF  shift 4
+	MENOS  shift 5
+	NRO  shift 6
+	PIZQ  shift 7
+	PRINT  shift 8
+	VAR  shift 9
+	WHILE  shift 10
+	.  error
+
+	expr  goto 50
+
+
+state 49
+	expr : WHILE expr DO expr END .  (19)
+
+	.  reduce 19
+
+
+state 50
+	expr : expr . MAS expr  (5)
+	expr : expr . MENOS expr  (6)
+	expr : expr . POR expr  (7)
+	expr : expr . DIV expr  (8)
+	expr : expr . MENOR expr  (9)
+	expr : expr . MENIG expr  (10)
+	expr : expr . MAYOR expr  (11)
+	expr : expr . MAYIG expr  (12)
+	expr : expr . IGUAL expr  (13)
+	expr : expr . DIST expr  (14)
+	expr : IF expr THEN expr ELSE expr .  (18)
+	expr : expr . PCOMA expr  (21)
+
+	DIST  shift 19
+	DIV  shift 20
+	IGUAL  shift 22
+	MAS  shift 23
+	MAYIG  shift 24
+	MAYOR  shift 25
+	MENIG  shift 26
+	MENOR  shift 27
+	MENOS  shift 28
+	POR  shift 30
+	DO  reduce 18
+	ELSE  reduce 18
+	END  reduce 18
+	EOF  reduce 18
+	PCOMA  reduce 18
+	PDER  reduce 18
+	THEN  reduce 18
+
+
+28 terminals, 4 nonterminals
+23 grammar rules, 51 states

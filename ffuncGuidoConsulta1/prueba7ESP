@@ -1,0 +1,5 @@
+para
+	(x:unit->unit):unit @ f = x@() fin
+en
+	(fn x:unit -> prent "hola"; cr: unit fin) @ f
+fin

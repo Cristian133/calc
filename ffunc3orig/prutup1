@@ -1,0 +1,5 @@
+let
+	fun f(x:(int, str, int, str, int)): unit = cr end
+in
+	f(1,"hola",3,"chau",5)
+end

@@ -1,0 +1,6 @@
+x <- 100;
+y <- 150;
+print x;
+print y;
+if x>y then print x else print y;
+print(if x>y then x else y)

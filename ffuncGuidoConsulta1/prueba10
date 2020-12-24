@@ -1,0 +1,9 @@
+let
+	fun f(s: str): unit =
+		print(s); cr;
+		s:="Hola mundo!";
+		print(s); cr
+	end
+in
+	f("hola")
+end

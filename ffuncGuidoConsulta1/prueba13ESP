@@ -1,0 +1,13 @@
+let
+	fun main(s: unit): unit =
+		let
+			fun f(x:unit): (str, (int, (str, int), str), str) =
+				("Hola mundo!", (123, ("Adios mundo!", 124), "Aquel mundo!"), "Este mundo!")
+			end
+		in
+			f(); ()
+		end
+	end
+in
+	main()
+end

@@ -1,0 +1,11 @@
+let
+	fun g(s:str):unit = () end
+	fun f(x:(int, str, int, str)):unit =
+		print(x.0); cr;
+		print(x.1); cr;
+		print(x.2); cr;
+		print(x.3); cr
+	end
+in
+	f(1, "abc", 2, "defg")
+end

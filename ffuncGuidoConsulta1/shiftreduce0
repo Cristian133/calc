@@ -1,0 +1,6 @@
+let
+	fun f(x:int):int=x end
+	fun g(x:int):unit = () end
+in
+	g f 3
+end

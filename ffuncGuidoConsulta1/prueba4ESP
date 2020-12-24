@@ -1,0 +1,5 @@
+para
+	(a:ent->ent, b: ent):ent @ f = a@b fen
+en
+	imprimir ((fn x:ent -> 2*x:ent fen, 55) @ f )
+fen

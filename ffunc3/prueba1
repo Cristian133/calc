@@ -1,0 +1,8 @@
+hacer
+	funcion f(x:(entero, entero, entero)):entero = x.0+x.1+x.2 fin
+	funcion g(x:entero):entero = 2*x fin
+	funcion h(x:cadena):unidad = imprimir(x); adentro; imprimir(x); adentro fin
+en
+	imprimir(f(1,2,3)); adentro; imprimir(g 4); adentro;
+	h "ho       la"; adentro 
+fin

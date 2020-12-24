@@ -1,0 +1,5 @@
+let
+	fun f(a, b): a@b end
+in
+	print f(fn x -> x:=2*x; x end, 55)
+end

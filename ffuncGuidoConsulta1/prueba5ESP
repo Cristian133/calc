@@ -1,0 +1,5 @@
+para
+	(a, b): a@b @ f fin
+en
+	imprimir ((fn x -> x:=2*x; x fin, 55) @ f)
+fin

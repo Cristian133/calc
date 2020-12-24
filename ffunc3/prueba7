@@ -1,0 +1,5 @@
+let
+	fun f(x:unit->unit):unit= x@() end
+in
+	f(fn x:unit -> print "hola"; cr: unit end)
+end

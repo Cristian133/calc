@@ -1,0 +1,19 @@
+para
+	(x: ent): unit @ f =
+		para
+			(y: ent): unit @ g =
+				para
+					(z: ent): unit @ h =
+						imprimir(x+y+z); cr
+					fin
+				en
+					(3 @ h)
+				fin
+			fin
+		en
+			(2 @ g)
+		fin
+	fin
+en
+	(1 @ f)
+fin

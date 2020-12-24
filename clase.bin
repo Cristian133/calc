@@ -1,0 +1,695 @@
+guido@fceia.unr.edu.ar
+3413 810971
+
+Cosas a tener en cuenta.
+a- Tanto ccalc como func son inseguros 
+La trampa esta en 
+exp :
+	| PRINT expr
+	| CR
+
+Este programa compila
+	print cr
+
+b- Hasta ahora solo tenemos entonces. Seria lindo tener strings
+
+Strings en forth:
+Una manera dificil
+
+create s
+'A cc, 'B c, 'C c,
+\ lo  mostrmos 
+S 3 type
+\ ora manera
+S" ABC"  \ queda addr u
+type
+\ otra manera de mostrar es 
+." ABC"    \ esto es prar string
+'A emit    \ para caracteres
+
+Aca tenemos el problema de que forth tiene distintas palabras para exhibir valores segun sean enteros o string.
+Podemos arreglar a y b con un sistema de tipos
+
+TFUNC (typed functions)
+
+Agregamos a la gramatica 
+%token<tfunctipo>TIPO
+y en tfunctipo.sml
+datatype Tipo = Unit
+	| Int
+	| String
+
+Por supuesto a tfunclex.lex agregamos
+
+ | "int"			{Tipo Int}
+ | "str"			{Tipo String}
+
+Antes 
+FUN ID PI Args PD IGUAL exp END
+args: ID rargs
+	|
+	;
+rargs: COMA ID rargs
+	 |
+	 ;
+
+Ahora FUN ID PI args PD DOSP TIPO IGUAL exp END
+args: ID DOSP TIPO rargs
+	|
+	;
+
+Agregamos 
+ | LET decvars IN expr END
+
+decvars : ID DOSP TIPO decvars
+		|
+		;
+
+params : exp rparams
+	   |
+	   ;
+rparams: COMA exp rparams
+		|
+		;
+
+Lametablemente tendremos que odificar algo la arquitectura del compilador por eficiencia
+Tpdavia no tenemos funciones mutuamente recursivas
+
+fun f() = g()
+fun g() = f()
+
+Palabras diferidas
+
+Permite crear palabras cuyo valor se dara mas adelante
+defer identificador 
+
+defer f
+defer g
+
+Para darle valor usaremos funciones anonimas
+
+:noname codigo ;
+is f
+:noname codigo ;
+is g
+
+----------------------------------------------------------------------------------------------
+
+Posibles variantes de and, or y not
+
+a) Escoger (o de evaluacion completa)
+	exp1 and exp2
+
+	se genera
+		codigo paa evaluar exp1
+		codigo paa evaluar exp2
+		and
+ b) Lazzy (o d cortocicuito)
+ And
+ exp1 and exp2 => if exp1 then exp2 else false
+ Or
+ exp1 or exp2 => if exp1 then true else exp2
+
+ true => -1 		-1 invert 0 (binario -1= 11=> invert 00=0 decimal)-
+ false => 0
+
+--------------------------------------------------------------------------------------
+
+Tratemos de agregar un sistema de tipos
+
+En otras palabras podremos denotar VALORES
+1			"hola"		()
+2			"abc"
+-3			"??"
+1115
+ y subconjuntos
+
+ int 		str 		unit
+
+ Estos tpos son los basicos o primitivos y agregarremos dos tipos derivados.
+
+a) Tuplas 
+b) Funciones
+	t dom -> t codom
+
+Necesitamos una sintaxis para describir los tipos.
+
+%token 
+
+
+datatype tipo = INt | Str | Unit | TT f Tipo list | TF of Tipo * Tipo
+ 
+Una sintaxi para estos tipos 
+%token PARI PARD FLECHA COMA
+%token INT, STR, UNIT
+%term<tipoast.Tipo>tipo
+%left FLECHA
+%%
+tipo : INT
+	| STR
+	| UNIT
+	| PARI tipos PARD
+	| tipo FLECHA tipo
+	... (carpeta tipado)
+
+Con este sistema de tipos podremos escribir
+
+let 	
+	fun fact (n:int):int=
+		if n=0 then 1 else n*fact(n-1)
+	end
+	fn f(x:unit->unit);unit=x() end
+in
+	print fact x ; cr ;
+	f (fun x->print"hola"; cr end)
+
+	
+-----------------------------------------------------------------------------------
+
+NOta: un pequeño problema de implementacion de los Strings de forth
+Forth tienen strings
+
+." hola" hola ok
+s" hola"  ok
+.s cr <2> 10899104 4 
+ ok
+
+Uns string usa dos celulas
+Prueben tirar la cantidad de caracteres y mostrarlos
+drop type
+
+Esto hace que usar in string como parametros sde una funcion presente problemas: ej.:
+
+:: cosa { s }  compiled
+s type cr  compiled
+s type cr  compiled
+;  ok
+s" hola" cosa hola
+
+da underflow por 
+1) dir cantCarac
+2) dir
+3) dir cantCarac
+4) cantCarac
+
+¿Como podemos usar strings como locales? 
+a) Usando dos locales para una string
+
+: cosa { xs xl }  compiled
+xs xl type cr xs xl type cr  compiled
+;  ok
+s" hola" cosa hola
+hola
+ ok
+
+b) usar un local mas grande que una celula
+
+: cosa { d: s }   compiled
+s type cr s type cr  compiled
+;  ok
+s" hola" cosa hola
+hola
+
+Forth permite memoria dinamica 
+Esto puede venir bien para crear tuplas 
+
+Normalmente el lugar donde aloja esa memoria es un area de momeria marcado por here
+
+Una manera de aloja para 5 celulas contiguas es
+
+here 5 cells allot
+
+here (direccion de alojamiento) 5 (cant) cells (multiplica el n° ant. por el tamaño de la celula) allot (aloca)
+
+Para saber donde quedó
+
+here dup 5 cells allot
+
+Ejemplo: pedir 5 celdas y guardar 10, 11, 12, 13 y 14
+
+here dup 5 cells allot  ok		(addr)
+dup 10 swap !  ok				
+dup 11 swap 1 cells + !  ok		
+dup 12 swap 2 cells + !  ok
+dup 13 swap 3 cells + !  ok
+dup 14 swap 4 cells + !  ok
+dup 2 cells + @ . cr 12 
+ ok
+
+here 5 cells -   (hace un free)
+
+--------------------------------------------------------------------------
+
+El proximo lenguaje sera una funcional que permitira definir funciones dentro de funciones
+(entre otras cosaas)
+Ej.:
+	let 	
+		fun f(i:int):int
+		let
+			fun g(j:int):int
+		in g(2*i) end
+	in print(f(33)); cr end
+
+
+¿Como se purde implementar esto?
+
+Una manera es usar una tecnica conocida como lambda lifting
+todas las funciones se "levantan" a un mismo nivel.
+
+f(i:int):int=........
+
+g(j:int):int=........
+
+Otras expresiones 
+Pero tenemos un problema:
+los let nos permiten definir funciones distintas con el mismo nombre.
+
+La solcion es "fabricar" para c/funcion, un nombre unico.
+UNa manera:
+
+fun f_1
+fun g_2
+fun f_3
+ 
+Pero loa problemas no han terminado.
+¿Permitimos esto?
+
+	let 	
+		fun f(i:int):int =
+		let
+			fun g(j:int):int = 2*j*i end
+		in g(2*i) end
+	in print(f(33)); cr end
+
+Gforth tiene al menos 2 pilas
+	- Una pila de datos
+	- Una pilande control, para los retornos, indices de loops, etc
+	- Una pila de locales
+
+: cosa  compiled
+.s cr  compiled
+{ x y z }  compiled
+.s cr  compiled
+;  ok
+10 11 12 cosa <3> 10 11 12 
+<0> 
+ ok
+see cosa 
+: cosa  
+  .s cr >l >l >l .s cr lp+!# 24 ; ok    // >l  saca de la pila de datos y pone en la pila de locales
+										// l>  pone en la pila de datos y saca de la de locales
+										// lp@ pone en la pila de datos el puntero de la pila de locales 
+
+: cosa  compiled
+lp@ . cr  compiled
+>l  compiled
+lp@ . cr  compiled
+>l  compiled
+lp@ . cr  compiled
+; redefined cosa   ok
+100 200 cosa 139686652811776 
+139686652811768 
+139686652811760 
+ ok
+
+Hagamos tres palabras embebidas
+
+ver cosas.fs
+
+-------------------------------------------------------------------------------
+
+Un par de consideraciones para el proxmimo lenguaje.
+Todavia no sera cinpletamente funcional, porque no sabemos (aun) como resolver lo siguiente:
+
+let 	
+	func f (i:int):int ->int -> int
+		let 
+			fun g(j:int):int=i+j end   // g necesita ser mas que una fnuncion, necesita ser una clausura (*)
+		in g end
+	end
+in
+	f(3)(4)
+end
+
+(*) una funcion mas sus variables libres, variables que no son de la funcion propiamente.
+	En el ejemplo, i es una variable libre de g.
+
+Volvamos al lenguaje en desarrollo.
+Permite fnciones anidadas y permite pasar funciones coomo argumentos.
+NOta: seguramente Uds. extrañarán poder defiinir mas variables, pero esto, con funciones anidadas, es innecesario.
+Ej.:
+C, ML y otroa permiten definir variables locales.
+let 
+	val i = 12
+	val j = 13
+in
+	i+j
+end
+
+Igual a:
+
+(fn i=>fn j=>i+j)(12)(13)
+
+[(x,y)]| x<-randge(1..100),y<-range(1..100), x<=y]
+
+fun range(m,n)= if  m>n then [] else m::range(m+1,n)
+fun mapend _ []=[]
+|   mapend f(h::t)=f:h@mapend f t
+
+mapend= fn:('a->'b)->('a list -> 'b list)
+
+mapend (fn x=>mapend(fn y=>if x<=y then [(x,y)] else [])(range(1,100)))(range(1,100))
+
+Volvamos a nuestro lenguaje. Para facilitarnos al vida haremos que las funciones tomen un solo argumento (como ML)
+fun f(x,y,z)=x+y+z
+val x =(10, 11, 12)
+f x;
+
+fun f x y z = x+y+z
+fun f x = fun y => fn z => x+y+z
+
+Esto parece una limitacion importante, pero no lo es, ya que nuestro sistema de tipos ahora acepta tuplas y funciones.
+Nuestro lenguaje, para acceder a los elementos de una tupla usara:
+tupla.nro empezando desde cero
+
+fun suma(i:int, j:int):int = 
+	i+j
+end
+
+Ahora
+fun suma(t:(int,int)):int=
+	t.0+t.1
+end
+
+Sabemos que Gforth implementa las variables locales ({ x y z })
+en un stack llamado locals stack. Si la funcion es recursiva puede haber un conjunto grande de sus variables locales.
+
+Para implementar 
+fun f(-)
+	fun g(-)
+		fun h(-)
+			fun i(-)
+
+...usaremos tres cosas
+a) Una variable local extra: static link
+: cosa
+{ _sl _x }
+
+b) El puntero de la pila de locales Lp. De hecho, podemos tomar su valor con lp@, que deja el valor de lp en el stack de datos.
+
+c) Hagamos una disciplina de pasaje de static link, desde la llamante a la llamada.
+	Definimos profundidad de una funcion como el numero de funciones anidantes que tiene.
+	La pŕofundidad de una variable es la profundidad de la funcion que la define.
+
+
+
+Tendremos tres casos
+1) prof llamante = Prof llamada
+   Ej. 
+let
+	fun f(-)
+	fun g(-)
+in 
+	....
+end
+Sl llamada = Sl llamante
+
+2) prof llamante < prof llamada
+
+Prof llamante + 1 = prof llamada
+Sl llamda = Lp llamante
+
+3) prof llamante > prof llamada
+
+Se debe hacer D=prof llamante - prof llamada-1
+y seguir D veces la lista enlazada de los Sl.
+
+Para esto ultimo definimos en forth:
+
+: _slink   compiled            
+0 u+do @ loop  compiled
+;  ok
+: slink_cell   compiled
+_slink 1 cells + @  compiled
+;  ok
+: cosa5  compiled
+{ _sl }  compiled
+_sl 0 slink_cell . cr  compiled
+_sl 1 slink_cell . cr  compiled
+_sl 2 slink_cell . cr  compiled
+_sl 3 slink_cell . cr  compiled
+_sl 4 slink_cell . cr  compiled
+;  ok
+: cosa4  compiled
+{ _sl x }  compiled
+lp@ cosa5  compiled
+;  ok
+: cosa3  compiled
+{ _sl a }  compiled
+lp@ 1000 cosa4  compiled
+;  ok
+: cosa2  compiled
+{ _sl a }  compiled
+lp@ 100 cosa3  compiled
+;  ok
+: cosa1  compiled
+{ _sl a }  compiled
+lp@ 10 cosa2  compiled
+;  ok
+: cosa0  compiled
+{ _sl a }  compiled
+lp@ 1 cosa1  compiled
+;  ok
+lp@ 1 cosa0 1000 
+100 
+10 
+1 
+1 
+ ok
+
+El lenguaje tendra funciones anidadas.
+Las funciones solo pueden declarar en un let, y solo son visibles en el cuerpo de ese let.
+Ojo!!! Un let es una expresion, y puede estar en cualquier parte, por ej.
+
+print(let fun f(x:int):int=let fun f(x:int):int=4 end in f(5) end in f(6)end)
+
+Y aca en donde tenemos otro problema que es que debemos "sacar" todas las funciones y ponerlas todas en el mismo
+nivel.
+Debemos renombrarlas.
+Otro punto a tener en cuenta que permitiremos que una funcion anidada pueda acceder a las variables de las anidantes.
+Para esto podemos usar el static link que vimos la clase pasada.
+Lo unico que aumenta la profundidad es la declaracion de una funcion.
+Esto obliga a ir llevando un registro de la profundidad y asociarla a cada cosa.
+Ademas tendremos otro problema.
+Nuestros tipos son:
+int 		1 cell 
+string 		2 cells
+tupla 		1 cell
+funcion   	1 cell
+
+Posibles solyciones
+1) ir llevando la cuenta, dentro de cada tupla de si antes de n valor deseado iints o strings
+
+( 1,2,3,4)				("hola",2,"chau",4)
+3 cells + @				5 cells + @
+3 cells + 15 swap !		5 cells + 15 swap !
+
+2) un nivel extra de indireccion
+
+					   1 cell
+|------|-------|	|------| 
+texto   largo			|------|------|
+						texto	largo
+
+-----------------------------------------------------------------------------------------------
+
+Infraestructura para el runtime
+Para hacer strings
+: _mkstring			(str largo--addr)    \ aloja lugar para los dos cells
+  here 2 cells allot dup
+
+  \: _mktuple ( eu .. e1 u -- tupla )\n\       
+	\dup here swap cells allot swap\n\
+	
+	n
+	n n 
+	n n here
+	n here n
+	n here n*cells
+	n here 
+	here n
+
+	\0 do\n\
+	\  dup i cells + rot swap !\n\
+	
+	here n 0
+	here
+	here here 
+	here here i
+	here here i*cells
+	here (here+i*cells)
+ e1 here (here+i*cells)
+	here (here+i*cells) e1
+	here e1 (here+i*cells)
+ e2 here 					/here ahora es here+i*cells)
+
+
+
+
+ Debemos limpiar porque nos podemos qurdar sin espacio
+ { _h _sl x }
+
+ al final debemos hacer 
+ _h here - allot
+
+ f(3)
+ here _sl (calculado) 3 _f execute
+
+ (int,(str,int),int)
+ (13,("hola",12),10)
+ 10 12 s" hola" _mkstrng 2 _mktuple 3 _mktuple
+
+ Otra cosa a tener en cuenta es como acceder a valores segun su tipo.
+ int 		la variable que lo denota o el static link direccionado
+ 			Ej.: 
+ 				fun f(x:int):unit=
+ 					let fun g(y:int):unit = y + x
+
+ 					y -> _y
+ 					x -> _sl 1 cells + @
+
+ str  			fun f(x:str):unit=
+ 					let fun g(y:str):unit = print(y);print(x)
+
+ 					y -> _y 2@
+ 					x -> _sl 1 cells + @ 2@
+
+fun f (x:((((int,int),int),int),int)):unit
+             -----------------
+             ------------
+             --------
+             ---
+
+			 x.0.0.0.0
+			 _x 0 cells + @ 0 cells + @ 0 cells + @ 0 cells + @
+
+--------------------------------------------------------------------------------------------
+
+Todavia qudan dos setallles que se complpetaran mañana.
+Hoy vamos a praticar un poco de forth
+
+Ejercicio: hhacer una palabra que invierta n cells en el stack
+
+: rev ( n1, n2, n3,...,nk k -- nk, n2, n1)
+
+Cosas con que contamos
+a) do loop  ( max min  -- )
+
+b) i : deja en el stack el indice actual del do loop
+	ej.: 10 1 do i . cr loop
+
+--------------------------------------------------------------------------------------------------
+
+Nota.: Decisiones de diseño del ulrimo lenguaje
+
+- Puede tener funcione anonimas, pero no se definen por simplicidad
+Una funcion debe poder devolver strings. La impleme FORTH en el stack de datos y la volvemos a convertir a una string ffunc al volver a la funcion llamante.
+
+- Debe poder devolver tuplas.  Lo que hacemos es hacer dos funciones. una es generica y despliega una tupla en el stack.
+fun desp [] _ = "drop \n"
+|	desp (TString::t) cnt = 
+		" dup "^InttoString cnt^" cells + @ 2@ "^
+		desp t (cnt+1)
+|	desp((TT lt)::t) cnt =
+	" dup "^InttoString cnt^" cells + @ "^
+	( desp lt 0 )^desp t ( cnt + 1 )
+|	desp (_::t) cnt = 
+	"^InttoString cnt^" cells + @ "::desp t (cnt + 1)
+
+------------------ para aprobar -------------------------------------
+
+a) Hacer una version de ffunc n castellano
+b) Cambiar la sintaxis de la invocacion de funciones de f(x) a x@F
+c) Terminnar de implementar la funcion inversa de desp.
+
+---------------------------------------------------------------------
+
+Para terminar el compilador necesitamos hacer dos funciones.
+Una que la desarme, pasando sus componentes al stack de datos y la otra
+que tome esos valores y la arme.
+
+Empecemos con la parte de Forth
+
+(cod.sh)
+
+Hagams una prueba. Construyamos un tupla y recorramosla
+
+\ ("Hola",121,(122,("Adios",123),"Chau"),124)
+
+124 s" Chau" _mkstring 
+123 s" Adios" _mkstring 2_mktuple
+122 3 _mktuple
+121 s" Hola" _mkstring 4 _mktuple
+
+Ahora viene lo jodido porque no consumiremos lo que vayamos sacando
+
+a) Int 
+
+addr
+addr addr
+addr (addr + i*cells)
+addr cell
+cell addr         /fue con un wap
+
+b) String 
+igual pero con rot al final
+
+c)
+(cod2.sh)
+
+Genralicemos en ML
+
+val tS = Int.toString
+
+fun emite Tupla Ret lt = 
+	let fun et [] _ cells = "drop "^ts cells^" roll\n"
+		|	et (Tstring::t) cnt cells = 
+			" dup "^tS cnt^" cells + @ 2@ rot\n "^
+			et t (cnt+1)(cells + 2)
+		|	et((TT lt)::t) cnt cells = 
+			(" dup "^tS cnt^" cells + @ \tupla\n "^
+			et lt 0 cells)^et t (cnt+1) cells
+		|	et(_::t)cnt cells = 
+			"dup "tS cnt^" cells + @ swap "^ et t (cnt+1) (cells+1)
+	in et tt 0 0 end	
+
+----------------------------------------------------------------------
+
+Habran notado que el desplegado de la tupla la deja al reves. Esto ayuda a rehacer la tupla
+en le espacio de la funcion llamante.
+
+Se debe generar un codigo similar a este:
+
+1) Cada vez que se encuentra una tupla
+	(TT Ltipos) se genera
+	"here "^tS(length ltipos)^" cells allot\n"
+Luego se recorre la tupla consumiendo los valores del stack
+
+(desp.sml)
+
+Codigo de clase anterior 
+Si uuna funcion devuelve una tupla l final se agrega al codigo generador
+
+let 
+	fun f(x:unit):(int,int)=
+		(10,11)
+	end
+	fun g(x:(int,int)):unit
+		x:=f()   <- iria el cod. de esta clase
+	end
+in 
+	g(1,2)
+end
+
+Call
+ "________________"^desppliega tret 0 0 

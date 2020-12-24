@@ -1,0 +1,17 @@
+let
+	fun main(s: str): unit =
+		let
+			fun f(s: str): str =
+				print(s); cr;
+				s:="Hola mundo!";
+				print(s); cr;
+				s
+			end
+		in
+			s:=f("hola");
+			print(s); cr
+		end
+	end
+in
+	main("grr")
+end

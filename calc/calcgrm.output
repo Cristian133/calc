@@ -1,0 +1,246 @@
+   0  $accept : %entry% $end
+
+   1  linea : expr PCOMA
+   2        | EOF
+
+   3  expr : NRO
+   4       | expr MAS expr
+   5       | expr MENOS expr
+   6       | expr POR expr
+   7       | expr DIV expr
+   8       | PIZQ expr PDER
+   9       | MENOS expr
+
+  10  %entry% : '\001' linea
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . linea  (10)
+
+	EOF  shift 3
+	MENOS  shift 4
+	NRO  shift 5
+	PIZQ  shift 6
+	.  error
+
+	expr  goto 7
+	linea  goto 8
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	linea : EOF .  (2)
+
+	.  reduce 2
+
+
+state 4
+	expr : MENOS . expr  (9)
+
+	MENOS  shift 4
+	NRO  shift 5
+	PIZQ  shift 6
+	.  error
+
+	expr  goto 9
+
+
+state 5
+	expr : NRO .  (3)
+
+	.  reduce 3
+
+
+state 6
+	expr : PIZQ . expr PDER  (8)
+
+	MENOS  shift 4
+	NRO  shift 5
+	PIZQ  shift 6
+	.  error
+
+	expr  goto 10
+
+
+state 7
+	linea : expr . PCOMA  (1)
+	expr : expr . MAS expr  (4)
+	expr : expr . MENOS expr  (5)
+	expr : expr . POR expr  (6)
+	expr : expr . DIV expr  (7)
+
+	DIV  shift 11
+	MAS  shift 12
+	MENOS  shift 13
+	PCOMA  shift 14
+	POR  shift 15
+	.  error
+
+
+state 8
+	%entry% : '\001' linea .  (10)
+
+	.  reduce 10
+
+
+state 9
+	expr : expr . MAS expr  (4)
+	expr : expr . MENOS expr  (5)
+	expr : expr . POR expr  (6)
+	expr : expr . DIV expr  (7)
+	expr : MENOS expr .  (9)
+
+	DIV  reduce 9
+	MAS  reduce 9
+	MENOS  reduce 9
+	PCOMA  reduce 9
+	PDER  reduce 9
+	POR  reduce 9
+
+
+state 10
+	expr : expr . MAS expr  (4)
+	expr : expr . MENOS expr  (5)
+	expr : expr . POR expr  (6)
+	expr : expr . DIV expr  (7)
+	expr : PIZQ expr . PDER  (8)
+
+	DIV  shift 11
+	MAS  shift 12
+	MENOS  shift 13
+	PDER  shift 16
+	POR  shift 15
+	.  error
+
+
+state 11
+	expr : expr DIV . expr  (7)
+
+	MENOS  shift 4
+	NRO  shift 5
+	PIZQ  shift 6
+	.  error
+
+	expr  goto 17
+
+
+state 12
+	expr : expr MAS . expr  (4)
+
+	MENOS  shift 4
+	NRO  shift 5
+	PIZQ  shift 6
+	.  error
+
+	expr  goto 18
+
+
+state 13
+	expr : expr MENOS . expr  (5)
+
+	MENOS  shift 4
+	NRO  shift 5
+	PIZQ  shift 6
+	.  error
+
+	expr  goto 19
+
+
+state 14
+	linea : expr PCOMA .  (1)
+
+	.  reduce 1
+
+
+state 15
+	expr : expr POR . expr  (6)
+
+	MENOS  shift 4
+	NRO  shift 5
+	PIZQ  shift 6
+	.  error
+
+	expr  goto 20
+
+
+state 16
+	expr : PIZQ expr PDER .  (8)
+
+	.  reduce 8
+
+
+state 17
+	expr : expr . MAS expr  (4)
+	expr : expr . MENOS expr  (5)
+	expr : expr . POR expr  (6)
+	expr : expr . DIV expr  (7)
+	expr : expr DIV expr .  (7)
+
+	DIV  reduce 7
+	MAS  reduce 7
+	MENOS  reduce 7
+	PCOMA  reduce 7
+	PDER  reduce 7
+	POR  reduce 7
+
+
+state 18
+	expr : expr . MAS expr  (4)
+	expr : expr MAS expr .  (4)
+	expr : expr . MENOS expr  (5)
+	expr : expr . POR expr  (6)
+	expr : expr . DIV expr  (7)
+
+	DIV  shift 11
+	POR  shift 15
+	MAS  reduce 4
+	MENOS  reduce 4
+	PCOMA  reduce 4
+	PDER  reduce 4
+
+
+state 19
+	expr : expr . MAS expr  (4)
+	expr : expr . MENOS expr  (5)
+	expr : expr MENOS expr .  (5)
+	expr : expr . POR expr  (6)
+	expr : expr . DIV expr  (7)
+
+	DIV  shift 11
+	POR  shift 15
+	MAS  reduce 5
+	MENOS  reduce 5
+	PCOMA  reduce 5
+	PDER  reduce 5
+
+
+state 20
+	expr : expr . MAS expr  (4)
+	expr : expr . MENOS expr  (5)
+	expr : expr . POR expr  (6)
+	expr : expr POR expr .  (6)
+	expr : expr . DIV expr  (7)
+
+	DIV  reduce 6
+	MAS  reduce 6
+	MENOS  reduce 6
+	PCOMA  reduce 6
+	PDER  reduce 6
+	POR  reduce 6
+
+
+13 terminals, 4 nonterminals
+11 grammar rules, 21 states

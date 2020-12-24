@@ -1,0 +1,4 @@
+fun f(x, y, z): x+y+z end
+fun g(x): 2*x end
+print f(1,2,3); cr;
+print g(4); cr

@@ -1,0 +1,5 @@
+let
+	fun f(x:(int, int, int, int, int)): unit = cr end
+in
+	f(1,2,3,4,5)
+end

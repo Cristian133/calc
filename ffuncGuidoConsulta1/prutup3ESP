@@ -1,0 +1,12 @@
+para
+	(x:(int, (str, int), str, int)): unit @ f =
+		imprimir(x.1.0); cr;
+		imprimir(x.1.1); cr;
+		x.1.0 := "chau";
+		x.1.1 := 11;
+		imprimir(x.1.0); cr;
+		imprimir(x.1.1); cr
+	fin
+en
+	((1,("hola",3),"chau",5) @ f)
+fin

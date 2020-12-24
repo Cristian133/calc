@@ -1,0 +1,3 @@
+int->str->str->int,
+(int->str->str)->int,
+int->(str->str)->int

@@ -1,0 +1,19 @@
+let
+	fun f(x: int): unit =
+		let
+			fun g(y: int): unit =
+				let
+					fun h(z: int): unit =
+						g(1); f(1)
+					end
+				in
+					h(3)
+				end
+			end
+		in
+			g(2)
+		end
+	end
+in
+	f(1)
+end

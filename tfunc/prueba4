@@ -1,0 +1,4 @@
+fun f(n:int):int=
+  read n; n
+end
+print f(0); cr

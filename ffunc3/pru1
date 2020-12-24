@@ -1,0 +1,11 @@
+hacer
+	funcion g(s:cadena):unidad = () fin
+	funcion f(x:(entero, cadena, entero, cadena)):unidad =
+		imprimir(x.0); adentro;
+		imprimir(x.1); adentro;
+		imprimir(x.2); adentro;
+		imprimir(x.3); adentro
+	fin
+en
+	((1, "abc", 2, "defg") @ f)
+fin

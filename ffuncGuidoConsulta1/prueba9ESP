@@ -1,0 +1,15 @@
+para
+	(x:(int, str, int)):unit @ f =
+		imprimir(x.0); cr;
+		imprimir(x.1); cr;
+		imprimir(x.2); cr
+	fin
+	(x:(int, str, int)):int @ g =
+		imprimir(x.1); cr;
+		x.0+x.2
+	fin
+en
+	((100, "hola", 200) @ f);
+    imprimir((100, "hola", 200) @ g);
+    cr
+fin

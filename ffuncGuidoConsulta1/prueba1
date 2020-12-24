@@ -1,0 +1,8 @@
+let
+	fun f(x:(int, int, int)):int = x.0+x.1+x.2 end
+	fun g(x:int):int = 2*x end
+	fun h(x:str):unit = print(x); cr; print(x); cr end
+in
+	print(f(1,2,3)); cr; print(g 4); cr;
+	h "ho       la"; cr 
+end

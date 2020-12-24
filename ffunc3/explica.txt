@@ -1,0 +1,65 @@
+Idea de compilador:
+
+
+FUENTE  ----->  COMPILADOR -----> EJECUTABLE -----> MAQUINA VIRTUAL -----> RESULTADO
+purebax		  emit()	    out.fs		FORTH
+						     gforth fs.out
+
+
+Archivos: 
+
+
+ffuncgrm.y		se procesa con bison ffuncgrm.y
+			% token
+			%% comienzan reglas de produccion
+			{acciones semánticas} 
+			en este archivo se modifica fun por @ donde?
+			modificar %prec APP exp expf	{call[$1,$2)}
+			por	  %prec APP expf ARR exp {(call($3,$1)}
+
+ffunclex.lex		se procesa con lex ffunclex.lex
+			% directivas
+			%% comienzan expresiones regulares
+			entre comillas los token?
+			agregamos línea con @   {ARROBA}
+			se traduce lo que esta entre "comillas"	
+
+
+ffunclex.sml    	*llama a ffuncgrm
+			         ffunctipo
+
+
+
+ffuncast.sml		contiene arbol de sintaxis abstracta
+			*llama a ffunctipo
+
+
+
+ffunctipo.sml		se traduce lo que esta entre "comillas"
+
+
+
+ffunctipado.sml		*llama a ffunctipo
+				ffuncast
+				ffuncemit 
+
+
+
+ffuncemit.sml		emite codigo Forth
+			aca comentamos fun emiTuplaRet
+			agregamos 	roll1 
+					roll2
+					despliega
+			*llama a ffuncast
+
+
+
+ffuncenv.sml		*llama a ffuncast
+				ffunctipo
+
+
+
+ffuncmain.sml		??????
+
+
+ffuncrt.sml		??????

@@ -1,0 +1,5 @@
+para
+	(x:(int, int, int, int, int)): unit @ f = imprimir(x.1); cr fin
+en
+	(1,2,3,4,5) @ f
+fin

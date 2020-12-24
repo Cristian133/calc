@@ -1,0 +1,12 @@
+let
+	fun f(x: int): unit =
+		let
+			fun g(y: int): unit = print(3) end
+			fun h(z: int): unit = g(1); f(1) end
+		in
+			h(3)
+		end
+	end
+in
+	f(1)
+end

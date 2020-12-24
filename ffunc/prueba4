@@ -1,0 +1,4 @@
+fun f(a, b):
+  a@b
+end
+print f(fn x -> 2*x end, 55)

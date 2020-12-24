@@ -1,0 +1,1775 @@
+   0  $accept : %entry% $end
+
+   1  prog : exp EOF
+
+   2  decls : dec decls
+   3        |
+
+   4  dec : PI ID DOSP tipo PD DOSP tipo ARROBA ID IGUAL exp END
+
+   5  tipo : TIPO
+   6       | tipo FLECHA tipo
+   7       | PI tipos PD
+
+   8  tipos : tipo rtipos
+
+   9  rtipos : COMA tipo rtipos
+  10         |
+
+  11  exp : NRO
+  12      | TEXTO
+  13      | UNIT
+  14      | expf
+  15      | exp MAS exp
+  16      | exp MENOS exp
+  17      | exp POR exp
+  18      | exp DIV exp
+  19      | exp IGUAL exp
+  20      | exp MENOR exp
+  21      | exp MENIG exp
+  22      | exp MAYOR exp
+  23      | exp MAYIG exp
+  24      | exp DIST exp
+  25      | tupla
+  26      | PI exp PD
+  27      | exp PCOMA exp
+  28      | IF exp THEN exp ELSE exp
+  29      | LET decls IN exp END
+  30      | sent
+
+  31  expf : ID
+  32       | expf PUNTO NRO
+  33       | exp ARROBA expf
+
+  34  sent : PRINT PI exp PD
+  35       | CR
+  36       | READ ID
+  37       | exp ASIGN exp
+
+  38  tupla : PI params PD
+
+  39  params : exp COMA exp rparams
+
+  40  rparams : COMA exp rparams
+  41          |
+
+  42  %entry% : '\001' prog
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . prog  (42)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	prog  goto 13
+	exp  goto 14
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	sent : CR .  (35)
+
+	.  reduce 35
+
+
+state 4
+	expf : ID .  (31)
+
+	.  reduce 31
+
+
+state 5
+	exp : IF . exp THEN exp ELSE exp  (28)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 18
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 6
+	exp : LET . decls IN exp END  (29)
+	decls : .  (3)
+
+	PI  shift 19
+	IN  reduce 3
+
+	decls  goto 20
+	dec  goto 21
+
+
+state 7
+	exp : NRO .  (11)
+
+	.  reduce 11
+
+
+state 8
+	exp : PI . exp PD  (26)
+	tupla : PI . params PD  (38)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 22
+	expf  goto 15
+	sent  goto 16
+	params  goto 23
+	tupla  goto 17
+
+
+state 9
+	sent : PRINT . PI exp PD  (34)
+
+	PI  shift 24
+	.  error
+
+
+state 10
+	sent : READ . ID  (36)
+
+	ID  shift 25
+	.  error
+
+
+state 11
+	exp : TEXTO .  (12)
+
+	.  reduce 12
+
+
+state 12
+	exp : UNIT .  (13)
+
+	.  reduce 13
+
+
+state 13
+	%entry% : '\001' prog .  (42)
+
+	.  reduce 42
+
+
+state 14
+	prog : exp . EOF  (1)
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	DIST  shift 28
+	DIV  shift 29
+	EOF  shift 30
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	POR  shift 39
+	.  error
+
+
+state 15
+	exp : expf .  (14)
+	expf : expf . PUNTO NRO  (32)
+
+	PUNTO  shift 40
+	ARROBA  reduce 14
+	ASIGN  reduce 14
+	COMA  reduce 14
+	DIST  reduce 14
+	DIV  reduce 14
+	ELSE  reduce 14
+	END  reduce 14
+	EOF  reduce 14
+	IGUAL  reduce 14
+	MAS  reduce 14
+	MAYIG  reduce 14
+	MAYOR  reduce 14
+	MENIG  reduce 14
+	MENOR  reduce 14
+	MENOS  reduce 14
+	PCOMA  reduce 14
+	PD  reduce 14
+	POR  reduce 14
+	THEN  reduce 14
+
+
+state 16
+	exp : sent .  (30)
+
+	.  reduce 30
+
+
+state 17
+	exp : tupla .  (25)
+
+	.  reduce 25
+
+
+state 18
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	exp : IF exp . THEN exp ELSE exp  (28)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	DIST  shift 28
+	DIV  shift 29
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	POR  shift 39
+	THEN  shift 41
+	.  error
+
+
+state 19
+	dec : PI . ID DOSP tipo PD DOSP tipo ARROBA ID IGUAL exp END  (4)
+
+	ID  shift 42
+	.  error
+
+
+state 20
+	exp : LET decls . IN exp END  (29)
+
+	IN  shift 43
+	.  error
+
+
+state 21
+	decls : dec . decls  (2)
+	decls : .  (3)
+
+	PI  shift 19
+	IN  reduce 3
+
+	decls  goto 44
+	dec  goto 21
+
+
+state 22
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : PI exp . PD  (26)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+	params : exp . COMA exp rparams  (39)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	COMA  shift 45
+	DIST  shift 28
+	DIV  shift 29
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	PD  shift 46
+	POR  shift 39
+	.  error
+
+
+state 23
+	tupla : PI params . PD  (38)
+
+	PD  shift 47
+	.  error
+
+
+state 24
+	sent : PRINT PI . exp PD  (34)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 48
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 25
+	sent : READ ID .  (36)
+
+	.  reduce 36
+
+
+state 26
+	expf : exp ARROBA . expf  (33)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 49
+	expf  goto 50
+	sent  goto 16
+	tupla  goto 17
+
+
+state 27
+	sent : exp ASIGN . exp  (37)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 51
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 28
+	exp : exp DIST . exp  (24)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 52
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 29
+	exp : exp DIV . exp  (18)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 53
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 30
+	prog : exp EOF .  (1)
+
+	.  reduce 1
+
+
+state 31
+	exp : exp IGUAL . exp  (19)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 54
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 32
+	exp : exp MAS . exp  (15)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 55
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 33
+	exp : exp MAYIG . exp  (23)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 56
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 34
+	exp : exp MAYOR . exp  (22)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 57
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 35
+	exp : exp MENIG . exp  (21)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 58
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 36
+	exp : exp MENOR . exp  (20)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 59
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 37
+	exp : exp MENOS . exp  (16)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 60
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 38
+	exp : exp PCOMA . exp  (27)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 61
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 39
+	exp : exp POR . exp  (17)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 62
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 40
+	expf : expf PUNTO . NRO  (32)
+
+	NRO  shift 63
+	.  error
+
+
+state 41
+	exp : IF exp THEN . exp ELSE exp  (28)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 64
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 42
+	dec : PI ID . DOSP tipo PD DOSP tipo ARROBA ID IGUAL exp END  (4)
+
+	DOSP  shift 65
+	.  error
+
+
+state 43
+	exp : LET decls IN . exp END  (29)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 66
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 44
+	decls : dec decls .  (2)
+
+	.  reduce 2
+
+
+state 45
+	params : exp COMA . exp rparams  (39)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 67
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 46
+	exp : PI exp PD .  (26)
+
+	.  reduce 26
+
+
+state 47
+	tupla : PI params PD .  (38)
+
+	.  reduce 38
+
+
+state 48
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : PRINT PI exp . PD  (34)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	DIST  shift 28
+	DIV  shift 29
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	PD  shift 68
+	POR  shift 39
+	.  error
+
+
+state 49
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	DIST  shift 28
+	DIV  shift 29
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	POR  shift 39
+	.  error
+
+
+50: reduce/reduce conflict (reduce 14, reduce 33) on ARROBA
+50: reduce/reduce conflict (reduce 14, reduce 33) on ASIGN
+50: reduce/reduce conflict (reduce 14, reduce 33) on DIST
+50: reduce/reduce conflict (reduce 14, reduce 33) on DIV
+50: reduce/reduce conflict (reduce 14, reduce 33) on IGUAL
+50: reduce/reduce conflict (reduce 14, reduce 33) on MAS
+50: reduce/reduce conflict (reduce 14, reduce 33) on MAYIG
+50: reduce/reduce conflict (reduce 14, reduce 33) on MAYOR
+50: reduce/reduce conflict (reduce 14, reduce 33) on MENIG
+50: reduce/reduce conflict (reduce 14, reduce 33) on MENOR
+50: reduce/reduce conflict (reduce 14, reduce 33) on MENOS
+50: reduce/reduce conflict (reduce 14, reduce 33) on PCOMA
+50: reduce/reduce conflict (reduce 14, reduce 33) on POR
+state 50
+	exp : expf .  (14)
+	expf : expf . PUNTO NRO  (32)
+	expf : exp ARROBA expf .  (33)
+
+	ARROBA  reduce 14
+	ASIGN  reduce 14
+	COMA  reduce 33
+	DIST  reduce 14
+	DIV  reduce 14
+	ELSE  reduce 33
+	END  reduce 33
+	EOF  reduce 33
+	IGUAL  reduce 14
+	MAS  reduce 14
+	MAYIG  reduce 14
+	MAYOR  reduce 14
+	MENIG  reduce 14
+	MENOR  reduce 14
+	MENOS  reduce 14
+	PCOMA  reduce 14
+	PD  reduce 33
+	POR  reduce 14
+	PUNTO  reduce 33
+	THEN  reduce 33
+
+
+51: shift/reduce conflict (shift 26, reduce 37) on ARROBA
+state 51
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+	sent : exp ASIGN exp .  (37)
+
+	ARROBA  shift 26
+	DIST  shift 28
+	DIV  shift 29
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	POR  shift 39
+	COMA  reduce 37
+	ELSE  reduce 37
+	END  reduce 37
+	EOF  reduce 37
+	PCOMA  reduce 37
+	PD  reduce 37
+	THEN  reduce 37
+
+
+52: shift/reduce conflict (shift 26, reduce 24) on ARROBA
+state 52
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp DIST exp .  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	DIV  shift 29
+	MAS  shift 32
+	MENOS  shift 37
+	POR  shift 39
+	ASIGN  reduce 24
+	COMA  reduce 24
+	ELSE  reduce 24
+	END  reduce 24
+	EOF  reduce 24
+	PCOMA  reduce 24
+	PD  reduce 24
+	THEN  reduce 24
+
+
+53: shift/reduce conflict (shift 26, reduce 18) on ARROBA
+state 53
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp DIV exp .  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  reduce 18
+	COMA  reduce 18
+	DIST  reduce 18
+	DIV  reduce 18
+	ELSE  reduce 18
+	END  reduce 18
+	EOF  reduce 18
+	IGUAL  reduce 18
+	MAS  reduce 18
+	MAYIG  reduce 18
+	MAYOR  reduce 18
+	MENIG  reduce 18
+	MENOR  reduce 18
+	MENOS  reduce 18
+	PCOMA  reduce 18
+	PD  reduce 18
+	POR  reduce 18
+	THEN  reduce 18
+
+
+54: shift/reduce conflict (shift 26, reduce 19) on ARROBA
+state 54
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp IGUAL exp .  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	DIV  shift 29
+	MAS  shift 32
+	MENOS  shift 37
+	POR  shift 39
+	ASIGN  reduce 19
+	COMA  reduce 19
+	ELSE  reduce 19
+	END  reduce 19
+	EOF  reduce 19
+	PCOMA  reduce 19
+	PD  reduce 19
+	THEN  reduce 19
+
+
+55: shift/reduce conflict (shift 26, reduce 15) on ARROBA
+state 55
+	exp : exp . MAS exp  (15)
+	exp : exp MAS exp .  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	DIV  shift 29
+	POR  shift 39
+	ASIGN  reduce 15
+	COMA  reduce 15
+	DIST  reduce 15
+	ELSE  reduce 15
+	END  reduce 15
+	EOF  reduce 15
+	IGUAL  reduce 15
+	MAS  reduce 15
+	MAYIG  reduce 15
+	MAYOR  reduce 15
+	MENIG  reduce 15
+	MENOR  reduce 15
+	MENOS  reduce 15
+	PCOMA  reduce 15
+	PD  reduce 15
+	THEN  reduce 15
+
+
+56: shift/reduce conflict (shift 26, reduce 23) on ARROBA
+state 56
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp MAYIG exp .  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	DIV  shift 29
+	MAS  shift 32
+	MENOS  shift 37
+	POR  shift 39
+	ASIGN  reduce 23
+	COMA  reduce 23
+	ELSE  reduce 23
+	END  reduce 23
+	EOF  reduce 23
+	PCOMA  reduce 23
+	PD  reduce 23
+	THEN  reduce 23
+
+
+57: shift/reduce conflict (shift 26, reduce 22) on ARROBA
+state 57
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp MAYOR exp .  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	DIV  shift 29
+	MAS  shift 32
+	MENOS  shift 37
+	POR  shift 39
+	ASIGN  reduce 22
+	COMA  reduce 22
+	ELSE  reduce 22
+	END  reduce 22
+	EOF  reduce 22
+	PCOMA  reduce 22
+	PD  reduce 22
+	THEN  reduce 22
+
+
+58: shift/reduce conflict (shift 26, reduce 21) on ARROBA
+state 58
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp MENIG exp .  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	DIV  shift 29
+	MAS  shift 32
+	MENOS  shift 37
+	POR  shift 39
+	ASIGN  reduce 21
+	COMA  reduce 21
+	ELSE  reduce 21
+	END  reduce 21
+	EOF  reduce 21
+	PCOMA  reduce 21
+	PD  reduce 21
+	THEN  reduce 21
+
+
+59: shift/reduce conflict (shift 26, reduce 20) on ARROBA
+state 59
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp MENOR exp .  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	DIV  shift 29
+	MAS  shift 32
+	MENOS  shift 37
+	POR  shift 39
+	ASIGN  reduce 20
+	COMA  reduce 20
+	ELSE  reduce 20
+	END  reduce 20
+	EOF  reduce 20
+	PCOMA  reduce 20
+	PD  reduce 20
+	THEN  reduce 20
+
+
+60: shift/reduce conflict (shift 26, reduce 16) on ARROBA
+state 60
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp MENOS exp .  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	DIV  shift 29
+	POR  shift 39
+	ASIGN  reduce 16
+	COMA  reduce 16
+	DIST  reduce 16
+	ELSE  reduce 16
+	END  reduce 16
+	EOF  reduce 16
+	IGUAL  reduce 16
+	MAS  reduce 16
+	MAYIG  reduce 16
+	MAYOR  reduce 16
+	MENIG  reduce 16
+	MENOR  reduce 16
+	MENOS  reduce 16
+	PCOMA  reduce 16
+	PD  reduce 16
+	THEN  reduce 16
+
+
+61: shift/reduce conflict (shift 26, reduce 27) on ARROBA
+state 61
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	exp : exp PCOMA exp .  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	DIST  shift 28
+	DIV  shift 29
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	POR  shift 39
+	COMA  reduce 27
+	ELSE  reduce 27
+	END  reduce 27
+	EOF  reduce 27
+	PCOMA  reduce 27
+	PD  reduce 27
+	THEN  reduce 27
+
+
+62: shift/reduce conflict (shift 26, reduce 17) on ARROBA
+state 62
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp POR exp .  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  reduce 17
+	COMA  reduce 17
+	DIST  reduce 17
+	DIV  reduce 17
+	ELSE  reduce 17
+	END  reduce 17
+	EOF  reduce 17
+	IGUAL  reduce 17
+	MAS  reduce 17
+	MAYIG  reduce 17
+	MAYOR  reduce 17
+	MENIG  reduce 17
+	MENOR  reduce 17
+	MENOS  reduce 17
+	PCOMA  reduce 17
+	PD  reduce 17
+	POR  reduce 17
+	THEN  reduce 17
+
+
+state 63
+	expf : expf PUNTO NRO .  (32)
+
+	.  reduce 32
+
+
+state 64
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	exp : IF exp THEN exp . ELSE exp  (28)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	DIST  shift 28
+	DIV  shift 29
+	ELSE  shift 69
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	POR  shift 39
+	.  error
+
+
+state 65
+	dec : PI ID DOSP . tipo PD DOSP tipo ARROBA ID IGUAL exp END  (4)
+
+	PI  shift 70
+	TIPO  shift 71
+	.  error
+
+	tipo  goto 72
+
+
+state 66
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	exp : LET decls IN exp . END  (29)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	DIST  shift 28
+	DIV  shift 29
+	END  shift 73
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	POR  shift 39
+	.  error
+
+
+state 67
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+	params : exp COMA exp . rparams  (39)
+	rparams : .  (41)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	COMA  shift 74
+	DIST  shift 28
+	DIV  shift 29
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	POR  shift 39
+	PD  reduce 41
+
+	rparams  goto 75
+
+
+state 68
+	sent : PRINT PI exp PD .  (34)
+
+	.  reduce 34
+
+
+state 69
+	exp : IF exp THEN exp ELSE . exp  (28)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 76
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 70
+	tipo : PI . tipos PD  (7)
+
+	PI  shift 70
+	TIPO  shift 71
+	.  error
+
+	tipo  goto 77
+	tipos  goto 78
+
+
+state 71
+	tipo : TIPO .  (5)
+
+	.  reduce 5
+
+
+state 72
+	dec : PI ID DOSP tipo . PD DOSP tipo ARROBA ID IGUAL exp END  (4)
+	tipo : tipo . FLECHA tipo  (6)
+
+	FLECHA  shift 79
+	PD  shift 80
+	.  error
+
+
+state 73
+	exp : LET decls IN exp END .  (29)
+
+	.  reduce 29
+
+
+state 74
+	rparams : COMA . exp rparams  (40)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 81
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 75
+	params : exp COMA exp rparams .  (39)
+
+	.  reduce 39
+
+
+76: shift/reduce conflict (shift 26, reduce 28) on ARROBA
+state 76
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	exp : IF exp THEN exp ELSE exp .  (28)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	DIST  shift 28
+	DIV  shift 29
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	POR  shift 39
+	COMA  reduce 28
+	ELSE  reduce 28
+	END  reduce 28
+	EOF  reduce 28
+	PCOMA  reduce 28
+	PD  reduce 28
+	THEN  reduce 28
+
+
+state 77
+	tipo : tipo . FLECHA tipo  (6)
+	tipos : tipo . rtipos  (8)
+	rtipos : .  (10)
+
+	COMA  shift 82
+	FLECHA  shift 79
+	PD  reduce 10
+
+	rtipos  goto 83
+
+
+state 78
+	tipo : PI tipos . PD  (7)
+
+	PD  shift 84
+	.  error
+
+
+state 79
+	tipo : tipo FLECHA . tipo  (6)
+
+	PI  shift 70
+	TIPO  shift 71
+	.  error
+
+	tipo  goto 85
+
+
+state 80
+	dec : PI ID DOSP tipo PD . DOSP tipo ARROBA ID IGUAL exp END  (4)
+
+	DOSP  shift 86
+	.  error
+
+
+state 81
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+	rparams : COMA exp . rparams  (40)
+	rparams : .  (41)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	COMA  shift 74
+	DIST  shift 28
+	DIV  shift 29
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	POR  shift 39
+	PD  reduce 41
+
+	rparams  goto 87
+
+
+state 82
+	rtipos : COMA . tipo rtipos  (9)
+
+	PI  shift 70
+	TIPO  shift 71
+	.  error
+
+	tipo  goto 88
+
+
+state 83
+	tipos : tipo rtipos .  (8)
+
+	.  reduce 8
+
+
+state 84
+	tipo : PI tipos PD .  (7)
+
+	.  reduce 7
+
+
+state 85
+	tipo : tipo . FLECHA tipo  (6)
+	tipo : tipo FLECHA tipo .  (6)
+
+	ARROBA  reduce 6
+	COMA  reduce 6
+	FLECHA  reduce 6
+	PD  reduce 6
+
+
+state 86
+	dec : PI ID DOSP tipo PD DOSP . tipo ARROBA ID IGUAL exp END  (4)
+
+	PI  shift 70
+	TIPO  shift 71
+	.  error
+
+	tipo  goto 89
+
+
+state 87
+	rparams : COMA exp rparams .  (40)
+
+	.  reduce 40
+
+
+state 88
+	tipo : tipo . FLECHA tipo  (6)
+	rtipos : COMA tipo . rtipos  (9)
+	rtipos : .  (10)
+
+	COMA  shift 82
+	FLECHA  shift 79
+	PD  reduce 10
+
+	rtipos  goto 90
+
+
+state 89
+	dec : PI ID DOSP tipo PD DOSP tipo . ARROBA ID IGUAL exp END  (4)
+	tipo : tipo . FLECHA tipo  (6)
+
+	ARROBA  shift 91
+	FLECHA  shift 79
+	.  error
+
+
+state 90
+	rtipos : COMA tipo rtipos .  (9)
+
+	.  reduce 9
+
+
+state 91
+	dec : PI ID DOSP tipo PD DOSP tipo ARROBA . ID IGUAL exp END  (4)
+
+	ID  shift 92
+	.  error
+
+
+state 92
+	dec : PI ID DOSP tipo PD DOSP tipo ARROBA ID . IGUAL exp END  (4)
+
+	IGUAL  shift 93
+	.  error
+
+
+state 93
+	dec : PI ID DOSP tipo PD DOSP tipo ARROBA ID IGUAL . exp END  (4)
+
+	CR  shift 3
+	ID  shift 4
+	IF  shift 5
+	LET  shift 6
+	NRO  shift 7
+	PI  shift 8
+	PRINT  shift 9
+	READ  shift 10
+	TEXTO  shift 11
+	UNIT  shift 12
+	.  error
+
+	exp  goto 94
+	expf  goto 15
+	sent  goto 16
+	tupla  goto 17
+
+
+state 94
+	dec : PI ID DOSP tipo PD DOSP tipo ARROBA ID IGUAL exp . END  (4)
+	exp : exp . MAS exp  (15)
+	exp : exp . MENOS exp  (16)
+	exp : exp . POR exp  (17)
+	exp : exp . DIV exp  (18)
+	exp : exp . IGUAL exp  (19)
+	exp : exp . MENOR exp  (20)
+	exp : exp . MENIG exp  (21)
+	exp : exp . MAYOR exp  (22)
+	exp : exp . MAYIG exp  (23)
+	exp : exp . DIST exp  (24)
+	exp : exp . PCOMA exp  (27)
+	expf : exp . ARROBA expf  (33)
+	sent : exp . ASIGN exp  (37)
+
+	ARROBA  shift 26
+	ASIGN  shift 27
+	DIST  shift 28
+	DIV  shift 29
+	END  shift 95
+	IGUAL  shift 31
+	MAS  shift 32
+	MAYIG  shift 33
+	MAYOR  shift 34
+	MENIG  shift 35
+	MENOR  shift 36
+	MENOS  shift 37
+	PCOMA  shift 38
+	POR  shift 39
+	.  error
+
+
+state 95
+	dec : PI ID DOSP tipo PD DOSP tipo ARROBA ID IGUAL exp END .  (4)
+
+	.  reduce 4
+
+
+State 50 contains 13 reduce/reduce conflicts.
+State 51 contains 1 shift/reduce conflict.
+State 52 contains 1 shift/reduce conflict.
+State 53 contains 1 shift/reduce conflict.
+State 54 contains 1 shift/reduce conflict.
+State 55 contains 1 shift/reduce conflict.
+State 56 contains 1 shift/reduce conflict.
+State 57 contains 1 shift/reduce conflict.
+State 58 contains 1 shift/reduce conflict.
+State 59 contains 1 shift/reduce conflict.
+State 60 contains 1 shift/reduce conflict.
+State 61 contains 1 shift/reduce conflict.
+State 62 contains 1 shift/reduce conflict.
+State 76 contains 1 shift/reduce conflict.
+
+
+39 terminals, 14 nonterminals
+43 grammar rules, 96 states

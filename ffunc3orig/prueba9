@@ -1,0 +1,15 @@
+let
+	fun f(x:(int, str, int)):unit =
+		print(x.0); cr;
+		print(x.1); cr;
+		print(x.2); cr
+	end
+	fun g(x:(int, str, int)):int =
+		print(x.1); cr;
+		x.0+x.2
+	end
+in
+	f(100, "hola", 200);
+    print(g(100, "hola", 200));
+    cr
+end

@@ -1,0 +1,33 @@
+\documentclass{article}
+\title{Teor\'{\i}a de Lenguajes \\ Semiparcial, no obligatorio}
+\date{Octubre 11, 2.016}
+\author{}
+\begin{document}
+\maketitle
+En {\tt ccalc}, {\tt func} y {\tt tfunc}.
+
+\begin{enumerate}
+\item Implemente el opuesto.
+\item Implemente {\tt or}, {\tt and} y {\tt not} (sugerencia: {\tt invert}).
+\item Implemente, en los m\'odulos indicados, el {\tt and} y
+	{\tt or} con sem\'antica {\it lazy}.
+\item !`Explore! Cambie la sintaxis de la manera que le parezca razonable.
+\item !`Explore! Cambie las precedencias de algunos operadores.
+\end{enumerate}
+
+Nota: si al hacer {\tt make depend} da error, edite el Makefile correspondiente
+y enmiende
+
+\begin{verbatim}
+        $(MOSMLTOOLS)/cutdeps < Makefile.bak > Makefile
+        $(MOSMLTOOLS)/mosmldep >> Makefile
+\end{verbatim}
+
+Debe quedar
+
+\begin{verbatim}
+       camlrunm catalogo donde estan cutdeps y mosmldeps/cutdeps < Makefile.bak > Makefile
+       camlrunm catalogo donde estan cutdeps y mosmldeps/mosmldep >> Makefile
+\end{verbatim}
+
+\end{document}

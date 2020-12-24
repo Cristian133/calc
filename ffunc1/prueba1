@@ -1,0 +1,5 @@
+fun f(x:int, y:int, z:int):int = x+y+z end
+fun g(x:int):int = 2*x end
+fun h(x:str):unit = print x; cr end
+print f(1,2,3); cr; print g(4); cr;
+h("hola"); cr 

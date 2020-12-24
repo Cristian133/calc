@@ -1,0 +1,1346 @@
+   0  $accept : %entry% $end
+
+   1  prog : decls exp EOF
+
+   2  decls : dec decls
+   3        |
+
+   4  dec : FUN ID PI args PD DOSP exp END
+
+   5  args : ID rargs
+   6       |
+
+   7  rargs : COMA ID rargs
+   8        |
+
+   9  exp : NRO
+  10      | ID
+  11      | exp MAS exp
+  12      | exp MENOS exp
+  13      | exp POR exp
+  14      | exp DIV exp
+  15      | exp IGUAL exp
+  16      | exp MENOR exp
+  17      | exp MENIG exp
+  18      | exp MAYOR exp
+  19      | exp MAYIG exp
+  20      | exp DIST exp
+  21      | exp ARRO exp
+  22      | ID PI params PD
+  23      | PI exp PD
+  24      | exp PCOMA exp
+  25      | ID ASIGN exp
+  26      | IF exp THEN exp ELSE exp
+  27      | PRINT exp
+  28      | FN ID FLECHA exp END
+
+  29  params : exp rparams
+  30         |
+
+  31  rparams : COMA exp rparams
+  32          |
+
+  33  %entry% : '\001' prog
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . prog  (33)
+	decls : .  (3)
+
+	FUN  shift 3
+	FN  reduce 3
+	ID  reduce 3
+	IF  reduce 3
+	NRO  reduce 3
+	PI  reduce 3
+	PRINT  reduce 3
+
+	prog  goto 4
+	decls  goto 5
+	dec  goto 6
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	dec : FUN . ID PI args PD DOSP exp END  (4)
+
+	ID  shift 7
+	.  error
+
+
+state 4
+	%entry% : '\001' prog .  (33)
+
+	.  reduce 33
+
+
+state 5
+	prog : decls . exp EOF  (1)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 14
+
+
+state 6
+	decls : dec . decls  (2)
+	decls : .  (3)
+
+	FUN  shift 3
+	FN  reduce 3
+	ID  reduce 3
+	IF  reduce 3
+	NRO  reduce 3
+	PI  reduce 3
+	PRINT  reduce 3
+
+	decls  goto 15
+	dec  goto 6
+
+
+state 7
+	dec : FUN ID . PI args PD DOSP exp END  (4)
+
+	PI  shift 16
+	.  error
+
+
+state 8
+	exp : FN . ID FLECHA exp END  (28)
+
+	ID  shift 17
+	.  error
+
+
+state 9
+	exp : ID .  (10)
+	exp : ID . PI params PD  (22)
+	exp : ID . ASIGN exp  (25)
+
+	ASIGN  shift 18
+	PI  shift 19
+	ARRO  reduce 10
+	COMA  reduce 10
+	DIST  reduce 10
+	DIV  reduce 10
+	ELSE  reduce 10
+	END  reduce 10
+	EOF  reduce 10
+	IGUAL  reduce 10
+	MAS  reduce 10
+	MAYIG  reduce 10
+	MAYOR  reduce 10
+	MENIG  reduce 10
+	MENOR  reduce 10
+	MENOS  reduce 10
+	PCOMA  reduce 10
+	PD  reduce 10
+	POR  reduce 10
+	THEN  reduce 10
+
+
+state 10
+	exp : IF . exp THEN exp ELSE exp  (26)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 20
+
+
+state 11
+	exp : NRO .  (9)
+
+	.  reduce 9
+
+
+state 12
+	exp : PI . exp PD  (23)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 21
+
+
+state 13
+	exp : PRINT . exp  (27)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 22
+
+
+state 14
+	prog : decls exp . EOF  (1)
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	EOF  shift 26
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	PCOMA  shift 34
+	POR  shift 35
+	.  error
+
+
+state 15
+	decls : dec decls .  (2)
+
+	.  reduce 2
+
+
+state 16
+	dec : FUN ID PI . args PD DOSP exp END  (4)
+	args : .  (6)
+
+	ID  shift 36
+	PD  reduce 6
+
+	args  goto 37
+
+
+state 17
+	exp : FN ID . FLECHA exp END  (28)
+
+	FLECHA  shift 38
+	.  error
+
+
+state 18
+	exp : ID ASIGN . exp  (25)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 39
+
+
+state 19
+	exp : ID PI . params PD  (22)
+	params : .  (30)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	PD  reduce 30
+
+	exp  goto 40
+	params  goto 41
+
+
+state 20
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+	exp : IF exp . THEN exp ELSE exp  (26)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	PCOMA  shift 34
+	POR  shift 35
+	THEN  shift 42
+	.  error
+
+
+state 21
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : PI exp . PD  (23)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	PCOMA  shift 34
+	PD  shift 43
+	POR  shift 35
+	.  error
+
+
+state 22
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+	exp : PRINT exp .  (27)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 27
+	ELSE  reduce 27
+	END  reduce 27
+	EOF  reduce 27
+	PCOMA  reduce 27
+	PD  reduce 27
+	THEN  reduce 27
+
+
+state 23
+	exp : exp ARRO . exp  (21)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 44
+
+
+state 24
+	exp : exp DIST . exp  (20)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 45
+
+
+state 25
+	exp : exp DIV . exp  (14)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 46
+
+
+state 26
+	prog : decls exp EOF .  (1)
+
+	.  reduce 1
+
+
+state 27
+	exp : exp IGUAL . exp  (15)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 47
+
+
+state 28
+	exp : exp MAS . exp  (11)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 48
+
+
+state 29
+	exp : exp MAYIG . exp  (19)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 49
+
+
+state 30
+	exp : exp MAYOR . exp  (18)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 50
+
+
+state 31
+	exp : exp MENIG . exp  (17)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 51
+
+
+state 32
+	exp : exp MENOR . exp  (16)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 52
+
+
+state 33
+	exp : exp MENOS . exp  (12)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 53
+
+
+state 34
+	exp : exp PCOMA . exp  (24)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 54
+
+
+state 35
+	exp : exp POR . exp  (13)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 55
+
+
+state 36
+	args : ID . rargs  (5)
+	rargs : .  (8)
+
+	COMA  shift 56
+	PD  reduce 8
+
+	rargs  goto 57
+
+
+state 37
+	dec : FUN ID PI args . PD DOSP exp END  (4)
+
+	PD  shift 58
+	.  error
+
+
+state 38
+	exp : FN ID FLECHA . exp END  (28)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 59
+
+
+state 39
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+	exp : ID ASIGN exp .  (25)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 25
+	ELSE  reduce 25
+	END  reduce 25
+	EOF  reduce 25
+	PCOMA  reduce 25
+	PD  reduce 25
+	THEN  reduce 25
+
+
+state 40
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+	params : exp . rparams  (29)
+	rparams : .  (32)
+
+	ARRO  shift 23
+	COMA  shift 60
+	DIST  shift 24
+	DIV  shift 25
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	PCOMA  shift 34
+	POR  shift 35
+	PD  reduce 32
+
+	rparams  goto 61
+
+
+state 41
+	exp : ID PI params . PD  (22)
+
+	PD  shift 62
+	.  error
+
+
+state 42
+	exp : IF exp THEN . exp ELSE exp  (26)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 63
+
+
+state 43
+	exp : PI exp PD .  (23)
+
+	.  reduce 23
+
+
+state 44
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp ARRO exp .  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  reduce 21
+	COMA  reduce 21
+	DIST  reduce 21
+	DIV  reduce 21
+	ELSE  reduce 21
+	END  reduce 21
+	EOF  reduce 21
+	IGUAL  reduce 21
+	MAS  reduce 21
+	MAYIG  reduce 21
+	MAYOR  reduce 21
+	MENIG  reduce 21
+	MENOR  reduce 21
+	MENOS  reduce 21
+	PCOMA  reduce 21
+	PD  reduce 21
+	POR  reduce 21
+	THEN  reduce 21
+
+
+state 45
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp DIST exp .  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIV  shift 25
+	MAS  shift 28
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 20
+	ELSE  reduce 20
+	END  reduce 20
+	EOF  reduce 20
+	PCOMA  reduce 20
+	PD  reduce 20
+	THEN  reduce 20
+
+
+state 46
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp DIV exp .  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	COMA  reduce 14
+	DIST  reduce 14
+	DIV  reduce 14
+	ELSE  reduce 14
+	END  reduce 14
+	EOF  reduce 14
+	IGUAL  reduce 14
+	MAS  reduce 14
+	MAYIG  reduce 14
+	MAYOR  reduce 14
+	MENIG  reduce 14
+	MENOR  reduce 14
+	MENOS  reduce 14
+	PCOMA  reduce 14
+	PD  reduce 14
+	POR  reduce 14
+	THEN  reduce 14
+
+
+state 47
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp IGUAL exp .  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIV  shift 25
+	MAS  shift 28
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 15
+	ELSE  reduce 15
+	END  reduce 15
+	EOF  reduce 15
+	PCOMA  reduce 15
+	PD  reduce 15
+	THEN  reduce 15
+
+
+state 48
+	exp : exp . MAS exp  (11)
+	exp : exp MAS exp .  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIV  shift 25
+	POR  shift 35
+	COMA  reduce 11
+	DIST  reduce 11
+	ELSE  reduce 11
+	END  reduce 11
+	EOF  reduce 11
+	IGUAL  reduce 11
+	MAS  reduce 11
+	MAYIG  reduce 11
+	MAYOR  reduce 11
+	MENIG  reduce 11
+	MENOR  reduce 11
+	MENOS  reduce 11
+	PCOMA  reduce 11
+	PD  reduce 11
+	THEN  reduce 11
+
+
+state 49
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp MAYIG exp .  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIV  shift 25
+	MAS  shift 28
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 19
+	ELSE  reduce 19
+	END  reduce 19
+	EOF  reduce 19
+	PCOMA  reduce 19
+	PD  reduce 19
+	THEN  reduce 19
+
+
+state 50
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp MAYOR exp .  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIV  shift 25
+	MAS  shift 28
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 18
+	ELSE  reduce 18
+	END  reduce 18
+	EOF  reduce 18
+	PCOMA  reduce 18
+	PD  reduce 18
+	THEN  reduce 18
+
+
+state 51
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp MENIG exp .  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIV  shift 25
+	MAS  shift 28
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 17
+	ELSE  reduce 17
+	END  reduce 17
+	EOF  reduce 17
+	PCOMA  reduce 17
+	PD  reduce 17
+	THEN  reduce 17
+
+
+state 52
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp MENOR exp .  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIV  shift 25
+	MAS  shift 28
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 16
+	ELSE  reduce 16
+	END  reduce 16
+	EOF  reduce 16
+	PCOMA  reduce 16
+	PD  reduce 16
+	THEN  reduce 16
+
+
+state 53
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp MENOS exp .  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIV  shift 25
+	POR  shift 35
+	COMA  reduce 12
+	DIST  reduce 12
+	ELSE  reduce 12
+	END  reduce 12
+	EOF  reduce 12
+	IGUAL  reduce 12
+	MAS  reduce 12
+	MAYIG  reduce 12
+	MAYOR  reduce 12
+	MENIG  reduce 12
+	MENOR  reduce 12
+	MENOS  reduce 12
+	PCOMA  reduce 12
+	PD  reduce 12
+	THEN  reduce 12
+
+
+state 54
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+	exp : exp PCOMA exp .  (24)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 24
+	ELSE  reduce 24
+	END  reduce 24
+	EOF  reduce 24
+	PCOMA  reduce 24
+	PD  reduce 24
+	THEN  reduce 24
+
+
+state 55
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp POR exp .  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	COMA  reduce 13
+	DIST  reduce 13
+	DIV  reduce 13
+	ELSE  reduce 13
+	END  reduce 13
+	EOF  reduce 13
+	IGUAL  reduce 13
+	MAS  reduce 13
+	MAYIG  reduce 13
+	MAYOR  reduce 13
+	MENIG  reduce 13
+	MENOR  reduce 13
+	MENOS  reduce 13
+	PCOMA  reduce 13
+	PD  reduce 13
+	POR  reduce 13
+	THEN  reduce 13
+
+
+state 56
+	rargs : COMA . ID rargs  (7)
+
+	ID  shift 64
+	.  error
+
+
+state 57
+	args : ID rargs .  (5)
+
+	.  reduce 5
+
+
+state 58
+	dec : FUN ID PI args PD . DOSP exp END  (4)
+
+	DOSP  shift 65
+	.  error
+
+
+state 59
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+	exp : FN ID FLECHA exp . END  (28)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	END  shift 66
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	PCOMA  shift 34
+	POR  shift 35
+	.  error
+
+
+state 60
+	rparams : COMA . exp rparams  (31)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 67
+
+
+state 61
+	params : exp rparams .  (29)
+
+	.  reduce 29
+
+
+state 62
+	exp : ID PI params PD .  (22)
+
+	.  reduce 22
+
+
+state 63
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+	exp : IF exp THEN exp . ELSE exp  (26)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	ELSE  shift 68
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	PCOMA  shift 34
+	POR  shift 35
+	.  error
+
+
+state 64
+	rargs : COMA ID . rargs  (7)
+	rargs : .  (8)
+
+	COMA  shift 56
+	PD  reduce 8
+
+	rargs  goto 69
+
+
+state 65
+	dec : FUN ID PI args PD DOSP . exp END  (4)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 70
+
+
+state 66
+	exp : FN ID FLECHA exp END .  (28)
+
+	.  reduce 28
+
+
+state 67
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+	rparams : COMA exp . rparams  (31)
+	rparams : .  (32)
+
+	ARRO  shift 23
+	COMA  shift 60
+	DIST  shift 24
+	DIV  shift 25
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	PCOMA  shift 34
+	POR  shift 35
+	PD  reduce 32
+
+	rparams  goto 71
+
+
+state 68
+	exp : IF exp THEN exp ELSE . exp  (26)
+
+	FN  shift 8
+	ID  shift 9
+	IF  shift 10
+	NRO  shift 11
+	PI  shift 12
+	PRINT  shift 13
+	.  error
+
+	exp  goto 72
+
+
+state 69
+	rargs : COMA ID rargs .  (7)
+
+	.  reduce 7
+
+
+state 70
+	dec : FUN ID PI args PD DOSP exp . END  (4)
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	END  shift 73
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	PCOMA  shift 34
+	POR  shift 35
+	.  error
+
+
+state 71
+	rparams : COMA exp rparams .  (31)
+
+	.  reduce 31
+
+
+state 72
+	exp : exp . MAS exp  (11)
+	exp : exp . MENOS exp  (12)
+	exp : exp . POR exp  (13)
+	exp : exp . DIV exp  (14)
+	exp : exp . IGUAL exp  (15)
+	exp : exp . MENOR exp  (16)
+	exp : exp . MENIG exp  (17)
+	exp : exp . MAYOR exp  (18)
+	exp : exp . MAYIG exp  (19)
+	exp : exp . DIST exp  (20)
+	exp : exp . ARRO exp  (21)
+	exp : exp . PCOMA exp  (24)
+	exp : IF exp THEN exp ELSE exp .  (26)
+
+	ARRO  shift 23
+	DIST  shift 24
+	DIV  shift 25
+	IGUAL  shift 27
+	MAS  shift 28
+	MAYIG  shift 29
+	MAYOR  shift 30
+	MENIG  shift 31
+	MENOR  shift 32
+	MENOS  shift 33
+	POR  shift 35
+	COMA  reduce 26
+	ELSE  reduce 26
+	END  reduce 26
+	EOF  reduce 26
+	PCOMA  reduce 26
+	PD  reduce 26
+	THEN  reduce 26
+
+
+state 73
+	dec : FUN ID PI args PD DOSP exp END .  (4)
+
+	.  reduce 4
+
+
+31 terminals, 10 nonterminals
+34 grammar rules, 74 states

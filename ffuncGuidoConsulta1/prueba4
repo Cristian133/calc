@@ -1,0 +1,5 @@
+let
+	fun f(a:int->int, b: int):int = a@b end
+in
+	print f(fn x:int -> 2*x:int end, 55)
+end
