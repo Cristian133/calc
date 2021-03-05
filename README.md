@@ -1,2 +1,2 @@
 # calc
-Calculadora hecha en las clases de Teoría de Lenguajes con el Profesor Ghido Macchi
+Calculadora hecha en clases de _Teoría de Lenguajes_ con el Profesor Guido Macchi.
